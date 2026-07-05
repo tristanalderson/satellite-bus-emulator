@@ -1,0 +1,4 @@
+[submodule "satellite-bus/lib/fprime"]
+	path = satellite-bus/lib/fprime
+	url = https://github.com/nasa/fprime.git
+	branch = release/v4.2.x

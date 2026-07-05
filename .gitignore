@@ -1,0 +1,27 @@
+# These are external frameworks populated dynamically via scripts/checkout-repos.sh
+poky/
+repos/
+
+# Exclude the massive outputs while keeping build-k26/conf/
+build-k26/tmp*/
+build-k26/sstate-cache/
+build-k26/downloads/
+build-k26/cache/
+build-k26/*.log
+sdk/
+
+# fprime items
+logs/
+cmake-build-*
+build-artifacts/
+build-fprime-*
+*-template
+*.template.cpp
+*.template.hpp
+
+# Misc
+satellite-bus/fprime-venv/
+satellite-bus/.idea/
+.vscode/
+.DS_Store
+*.gcov
