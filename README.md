@@ -1,5 +1,4 @@
 # Satellite Bus Emulator
-
 A flight computer stack for the AMD Kria KV260 (Zynq UltraScale+ K26 SOM), built from source:
 a custom embedded Linux platform (Yocto, rel-v2024.2) running an [F´](https://fprime.jpl.nasa.gov)
 flight software deployment, with telemetry and commanding over Ethernet to a ground station (`fprime-gds`).
@@ -111,7 +110,8 @@ TCP client, so the ground has to be listening before the spacecraft dials in —
 ```sh
 fprime-gds -n \
   --dictionary satellite-bus/build-artifacts/kv260-yocto/SatelliteDeployment/dict/SatelliteDeploymentTopologyDictionary.json \
-  --ip-address 0.0.0.0 --ip-port 50000
+  --ip-address 0.0.0.0 --ip-port 50000 \
+  --gui-addr 0.0.0.0
 ```
 
 Then the flight binary (KV260, over ssh or serial — login `root`, no password, don't put this on a network you care about):

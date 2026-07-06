@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential chrpath cpio debianutils diffstat file gawk git \
     iputils-ping locales python3 python3-git python3-jinja2 lz4 \
     python3-pexpect python3-pip python3-subunit socat texinfo unzip wget xz-utils zstd sudo \
-    cmake python3-venv tmux curl ripgrep clangd \
+    cmake python3-venv tmux curl ripgrep clangd ssh \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --break-system-packages --upgrade fprime-bootstrap
