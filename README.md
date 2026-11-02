@@ -1,4 +1,41 @@
 # Satellite Bus Emulator
+
+## EDF migration in progress
+
+I'm working on moving this project to EDF; the plan is in `MIGRATION_PLAN.md`.
+The 2024.2 instructions below are still the baseline. The new configuration
+and scripts in `config/edf-release.env` and `scripts/edf/` are a starting point:
+they haven't been tested on a Linux build host or the KV260 yet. I don't have
+a built EDF image or matching SDK to test here. Use
+`bash scripts/edf/preflight.sh` on Linux to check the host. The
+new scripts aren't ready for flashing storage or updating boot firmware.
+
+On a Linux host with Docker, these are the planned first steps:
+
+```sh
+bash scripts/edf/preflight.sh
+bash scripts/edf/pull-builder.sh
+bash scripts/edf/run-builder.sh
+```
+
+Inside the builder, record the installed `repo --version` output and use that
+same version when recreating the environment. The bootstrap currently requires
+the exact output explicitly; this is a provisional check, not a verified pin:
+
+```sh
+export EDF_REPO_VERSION="$(repo --version)"
+bash scripts/edf/bootstrap.sh sync
+source scripts/edf/env.sh
+edf_verify_config
+bitbake "$EDF_IMAGE" --runall=fetch
+bitbake "$EDF_IMAGE"
+```
+
+I haven't tested these steps yet. Before trying the image on hardware, record
+the resolved manifest, builder digest, image checksum, and SDK selection. The
+old F Prime CMake toolchain hardcodes its 2024.2 compiler path, so it still needs
+to be updated and tested with the EDF SDK.
+
 A flight computer stack for the AMD Kria KV260 (Zynq UltraScale+ K26 SOM), built from source:
 a custom embedded Linux platform (Yocto, rel-v2024.2) running an [F Prime](https://fprime.jpl.nasa.gov)
 flight software deployment, with telemetry and commanding over Ethernet to a ground station (`fprime-gds`).

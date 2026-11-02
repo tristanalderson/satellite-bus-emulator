@@ -25,3 +25,6 @@ satellite-bus/.idea/
 .vscode/
 .DS_Store
 *.gcov
+
+# EDF generated workspaces
+work/
