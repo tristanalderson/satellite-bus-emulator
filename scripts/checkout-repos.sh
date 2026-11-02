@@ -11,7 +11,7 @@ cd "$TARGET_DIR"
 
 echo "Checking out Yocto and layer repositories..."
 
-git clone -b scarthgap https://github.com/yoctoproject/poky.git
+git clone -b scarthgap https://github.com/yoctoproject/poky.git "$SCRIPT_DIR/../poky"
 git clone -b scarthgap https://github.com/openembedded/meta-openembedded.git
 git clone -b rel-v2024.2 https://github.com/Xilinx/meta-kria.git
 git clone -b rel-v2024.2 https://github.com/Xilinx/meta-xilinx.git

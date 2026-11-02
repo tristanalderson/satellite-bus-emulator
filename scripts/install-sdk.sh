@@ -1,5 +1,5 @@
 #!/bin/bash
-# scripts/install-sdk.sh — install the Yocto SDK to ./sdk for F´ cross-compilation.
+# scripts/install-sdk.sh - install the Yocto SDK to ./sdk for F Prime cross-compilation.
 # Prereq: bitbake core-image-full-cmdline -c populate_sdk   (see README)
 set -eu
 cd "$(dirname "$0")/.."

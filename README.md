@@ -1,17 +1,17 @@
 # Satellite Bus Emulator
 A flight computer stack for the AMD Kria KV260 (Zynq UltraScale+ K26 SOM), built from source:
-a custom embedded Linux platform (Yocto, rel-v2024.2) running an [F´](https://fprime.jpl.nasa.gov)
+a custom embedded Linux platform (Yocto, rel-v2024.2) running an [F Prime](https://fprime.jpl.nasa.gov)
 flight software deployment, with telemetry and commanding over Ethernet to a ground station (`fprime-gds`).
 
 I built this to learn what actually sits between "bare silicon" and "spacecraft sends telemetry."
 Turns out the answer is mostly BitBake errors.
 
 ```
-┌─ KV260 ──────────────────────┐         ┌─ Host / container ────────┐
-│  F´ SatelliteDeployment      │  TCP    │  fprime-gds               │
-│  └─ custom Linux (Yocto)     ├────────►│  telemetry / commands     │
-│     kernel + dtb + rootfs    │  :50000 │  web UI :5000             │
-└──────────────────────────────┘         └───────────────────────────┘
++- KV260 -------------------------+       +- Host / container --------+
+| F Prime SatelliteDeployment    |  TCP  | fprime-gds                |
+| Custom Linux (Yocto)           +------>| telemetry / commands      |
+| kernel + dtb + rootfs          | :50000| web UI :5000              |
++--------------------------------+       +---------------------------+
 ```
 
 ## Architecture
@@ -22,11 +22,11 @@ flowchart TB
         direction TB
         subgraph boot["Boot chain"]
             direction LR
-            qspi["QSPI (factory)<br/>FSBL → PMU FW → ATF → U-Boot"] --> sd["SD card (this repo)<br/>kernel + dtb + rootfs (wic)"]
+            qspi["QSPI (factory)<br/>FSBL -> PMU FW -> ATF -> U-Boot"] --> sd["SD card (this repo)<br/>kernel + dtb + rootfs (wic)"]
         end
-        subgraph apu["A53s — custom Linux (Yocto)"]
+        subgraph apu["A53s - custom Linux (Yocto)"]
             direction TB
-            subgraph fsw["F´ SatelliteDeployment (topology not final)"]
+            subgraph fsw["F Prime SatelliteDeployment (topology not final)"]
                 direction LR
                 comm["comm stack<br/>TcpClient / framer / deframer"] <--> cdh["core C&DH<br/>cmdDisp / events / tlmChan"]
                 cdh <--> rg["rate groups<br/>+ our components, TBD"]
@@ -39,22 +39,22 @@ flowchart TB
     end
     comm <-->|"TCP :50000<br/>flight side is the client"| gds
 
-    %% RPU (R5F) and PL are idle for now — Linux-only bring-up first.
+    %% RPU (R5F) and PL are idle for now - Linux-only bring-up first.
 ```
 
 ## Layout
 
 | Path | Contents |
 |---|---|
-| `satellite-bus/` | F´ project: components, `SatelliteDeployment` topology, cross toolchain |
+| `satellite-bus/` | F Prime project: components, `SatelliteDeployment` topology, cross toolchain |
 | `build-k26/conf/` | Yocto build configuration (layers, machine, image tweaks) |
 | `scripts/` | Container, repo checkout, environment, and SDK install scripts |
-| `Dockerfile` | Build container (Yocto host deps + F´ host deps) |
+| `Dockerfile` | Build container (Yocto host deps + F Prime host deps) |
 
 `poky/` and `repos/` (BSP layers) are not tracked; `scripts/checkout-repos.sh` populates them.
-F´ itself is a git submodule pinned in `satellite-bus/lib/fprime`.
+F Prime itself is a git submodule pinned in `satellite-bus/lib/fprime`.
 
-The layer list in `init-yocto.sh` looks excessive for "just boot Linux." It isn't — the
+The layer list in `init-yocto.sh` looks excessive for "just boot Linux." It isn't - the
 `k26-smk-kv-sdt` machine hard-requires the SDT firmware flow, which drags in meta-openamp,
 meta-virtualization, and friends. Each layer in that script is there because the build broke
 without it.
@@ -76,8 +76,8 @@ cd satellite_bus_emulator
 ```sh
 source scripts/init-yocto.sh                       # sets up env, registers layers
 bitbake core-image-full-cmdline                    # bootable wic image
-bitbake core-image-full-cmdline -c populate_sdk    # cross-SDK for F´ (long — hours, not minutes. once.)
-./scripts/install-sdk.sh                           # installs SDK to ./sdk
+bitbake core-image-full-cmdline -c populate_sdk    # cross-SDK for F Prime (long - hours, not minutes. once.)
+bash scripts/install-sdk.sh                        # installs SDK to ./sdk
 ```
 
 Flash the image (host side):
@@ -89,7 +89,7 @@ xz -dc build-k26/tmp/deploy/images/k26-smk-kv-sdt/core-image-full-cmdline-k26-sm
 
 MACHINE is `k26-smk-kv-sdt` (KV260, SDT flow), set in `build-k26/conf/local.conf`.
 
-### 2. Flight software (F´)
+### 2. Flight software (F Prime)
 
 ```sh
 source scripts/fprime-cross-env.sh     # SDK env + python venv
@@ -105,7 +105,7 @@ on the board" class of bug.
 ## Run
 
 Ground station first (container, ports 5000/50000 published). Order matters: the flight side is a
-TCP client, so the ground has to be listening before the spacecraft dials in — same as real life.
+TCP client, so the ground has to be listening before the spacecraft dials in - same as real life.
 
 ```sh
 fprime-gds -n \
@@ -114,7 +114,7 @@ fprime-gds -n \
   --gui-addr 0.0.0.0
 ```
 
-Then the flight binary (KV260, over ssh or serial — login `root`, no password, don't put this on a network you care about):
+Then the flight binary (KV260, over ssh or serial - login `root`, no password, don't put this on a network you care about):
 
 ```sh
 scp satellite-bus/build-artifacts/kv260-yocto/SatelliteDeployment/bin/SatelliteDeployment root@<kv260-ip>:
@@ -122,14 +122,16 @@ ssh root@<kv260-ip> ./SatelliteDeployment -a <host-ip> -p 50000
 ```
 
 Telemetry appears at `http://<host-ip>:5000`. If nothing connects, check in this order: can the
-board ping the host, is anything listening on 50000 (`ss -tlnp` in the container — it's usually
+board ping the host, is anything listening on 50000 (`ss -tlnp` in the container - it's usually
 the GDS bound to 127.0.0.1 instead of 0.0.0.0), and does the dictionary match the binary you
 actually flashed.
 
 ## Notes
 
-- The KV260 boots its factory QSPI firmware (FSBL/PMU/ATF/U-Boot) and hands off to this image on
-  SD. The Yocto build produces its own copies of all that boot firmware — they sit unused in the
-  deploy directory. Leave QSPI alone; there's nothing to gain and a bricked SOM to lose.
-- Serial console: 115200 baud on the carrier's USB-UART (`picocom -b 115200 /dev/ttyUSB1` — the
+- This 2024.2 setup uses the KV260's QSPI boot firmware before loading the SD image. Firmware
+  compatibility depends on the firmware and image versions; check the installed version and AMD's
+  release guidance before changing it. Preserve a recovery path if an update is needed.
+- Serial console: 115200 baud on the carrier's USB-UART (`picocom -b 115200 /dev/ttyUSB1` - the
   FTDI chip enumerates several ports, console is usually the second).
+
+The longer-term ideas and learning goals are in [PROJECT_VISION.md](PROJECT_VISION.md).

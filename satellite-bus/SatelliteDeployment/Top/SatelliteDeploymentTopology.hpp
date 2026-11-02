@@ -11,9 +11,9 @@
 
 namespace SatelliteDeployment {
 /**
- * \brief initialize and run the F´ topology
+ * \brief initialize and run the F Prime topology
  *
- * Initializes, configures, and runs the F´ topology. This is performed through a series of steps, some provided via
+ * Initializes, configures, and runs the F Prime topology. This is performed through a series of steps, some provided via
  * autocoded functions, and others provided via the functions implementation. These steps are:
  *
  *   1. Call the autocoded `initComponents()` function initializing each component via the `component.init` method
@@ -25,7 +25,7 @@ namespace SatelliteDeployment {
  *   7. Start tasks not owned by active components
  *
  * Step 4 and step 7 are custom and supplied by the project. The ordering of steps 1, 2, 3, 5, and 6 are critical for
- * F´ topologies to function. Configuration (step 4) typically assumes a connect but not started topology and is thus
+ * F Prime topologies to function. Configuration (step 4) typically assumes a connect but not started topology and is thus
  * inserted between step 3 and 5. Step 7 may come before or after the active component initializations. Since these
  * custom tasks often start radio communication it is convenient to start them last.
  *
@@ -37,9 +37,9 @@ namespace SatelliteDeployment {
 void setupTopology(const TopologyState& state);
 
 /**
- * \brief teardown the F´ topology
+ * \brief teardown the F Prime topology
  *
- * Tears down the F´ topology in preparation for shutdown. This is done via a series of steps, some provided by
+ * Tears down the F Prime topology in preparation for shutdown. This is done via a series of steps, some provided by
  * autocoded functions, and others provided via the function implementation. These steps are:
  *
  *   1. Call the autocoded `stopTasks()` function to stop the tasks started by `startTasks()` (active components)

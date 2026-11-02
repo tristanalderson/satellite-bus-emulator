@@ -42,7 +42,7 @@ static void signalHandler(int signum) {
 /**
  * \brief execute the program
  *
- * This F´ program is designed to run in standard environments (e.g. Linux/macOs running on a laptop). Thus it uses
+ * This F Prime program is designed to run in standard environments (e.g. Linux/macOs running on a laptop). Thus it uses
  * command line inputs to specify how to connect.
  *
  * @param argc: argument count supplied to program

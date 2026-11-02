@@ -3,8 +3,8 @@
     "configurePresets": [
       {
         "name": "fprime",
-        "displayName": "F´ Release Preset",
-        "description": "F´ release build using local fprime-venv",
+        "displayName": "F Prime Release Preset",
+        "description": "F Prime release build using local fprime-venv",
         "binaryDir": "${sourceDir}/build-fprime-automatic-native",
         "generator": "Ninja",
         "environment": {
@@ -19,8 +19,8 @@
       {
         "name": "fprime-debug",
         "inherits": "fprime",
-        "displayName": "F´ Debug Preset",
-        "description": "F´ debug build using local fprime-venv",
+        "displayName": "F Prime Debug Preset",
+        "description": "F Prime debug build using local fprime-venv",
         "cacheVariables": {
             "CMAKE_BUILD_TYPE": "Debug"
         }
@@ -28,8 +28,8 @@
       {
         "name": "fprime-ut",
         "inherits": "fprime-debug",
-        "displayName": "F´ Unit Test Preset",
-        "description": "F´ debug build including unit tests using local fprime-venv",
+        "displayName": "F Prime Unit Test Preset",
+        "description": "F Prime debug build including unit tests using local fprime-venv",
         "binaryDir": "${sourceDir}/build-fprime-automatic-native-ut",
         "cacheVariables": {
             "BUILD_TESTING": "ON"
